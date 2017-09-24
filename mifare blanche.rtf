@@ -65,8 +65,7 @@ Sector Block   0  1  2  3   4  5  6  7   8  9 10 11  12 13 14 15  AccessBits
    1      7  PCD_Authenticate() failed: Timeout in communication.
    0      3  PCD_Authenticate() failed: Timeout in communication.
 
-
-
+----------------------------------------------------------------------------------------------------------------------
 
 Scan a MIFARE Classic PICC to demonstrate read and write.
 Using key (for A and B): FF FF FF FF FF FF
@@ -100,6 +99,7 @@ Failure, no match :-(
 Current data in sector:
    0      3  PCD_Authenticate() failed: Timeout in communication.
 
+--------------------------------------------------------------------------------------------------------------------
 
 Authenticating again using key B...
 PCD_Authenticate() failed: Timeout in communication.
@@ -114,3 +114,56 @@ Reading data from block 3 ...
 MIFARE_Read() failed: Timeout in communication.
 Data in block 3:
  30 03 99 9A 00 37 49 60 00 FF FF FF FF FF FF 45
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Scan a MIFARE Classic PICC to demonstrate read and write.
+Using key (for A and B): FF FF FF FF FF FF
+BEWARE: Data will be written to the PICC, in sector #1
+Card UID: 45 30 0F 15
+PICC type: MIFARE 1KB
+Authenticating using key A...
+Current data in sector:
+   2     11   00 00 00 00  00 00 FF 07  80 69 FF FF  FF FF FF FF  [ 0 0 1 ] 
+         10   03 03 03 03  03 03 03 03  03 03 03 03  03 03 03 03  [ 0 0 0 ] 
+          9   02 02 02 02  02 02 02 02  02 02 02 02  02 02 02 02  [ 0 0 0 ] 
+          8   01 01 01 01  01 01 01 01  01 01 01 01  01 01 01 01  [ 0 0 0 ] 
+
+Reading data from block 11 ...
+Data in block 11:
+ 00 00 00 00 00 00 FF 07 80 69 FF FF FF FF FF FF
+
+Authenticating again using key B...
+Writing data into block 11 ...
+ 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+Reading data from block 11 ...
+MIFARE_Read() failed: A MIFARE PICC responded with NAK.
+Data in block 11:
+ 04 0B D1 16 00 00 FF 07 80 69 FF FF FF FF FF FF
+Checking result...
+Number of bytes that match = 2
+Failure, no match :-(
+  perhaps the write didn't work properly...
+
+Current data in sector:
+   2     11  PCD_Authenticate() failed: Timeout in communication.
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Scan a MIFARE Classic PICC to demonstrate read and write.
+Using key (for A and B): 00 00 00 00 00 00
+BEWARE: Data will be written to the PICC, in sector #1
+Card UID: 45 30 0F 15
+PICC type: MIFARE 1KB
+Authenticating using key A...
+Current data in sector:
+   2     11  MIFARE_Read() failed: A MIFARE PICC responded with NAK.
+   2     10  PCD_Authenticate() failed: Timeout in communication.
+
+Reading data from block 10 ...
+MIFARE_Read() failed: Timeout in communication.
+Data in block 10:
+ 30 0A 58 07 00 00 FF 07 80 69 FF FF FF FF FF FF
+
