@@ -98,7 +98,7 @@ void loop() {
     //byte sector         = 15;
     //byte blockAddr      = 60;
     //byte dataBlock[]    = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    //byte trailerBlock   = 61;
+    byte trailerBlock   = 61;
     
     MFRC522::StatusCode status;
     byte buffer[18];
@@ -113,8 +113,8 @@ void loop() {
         return;
     }
 
-    int sector = 3;
-    int blockAddr = 15;
+    int sector = 0;
+    int blockAddr = 0;
     int a = 0;
     while (sector < 16)
     {
@@ -124,17 +124,17 @@ void loop() {
       Serial.println();
 
       // Read data from the block
-      Serial.print(F("Reading data from block ")); Serial.print(blockAddr);
-      Serial.println(F(" ..."));
+//      Serial.print(F("Reading data from block ")); Serial.print(blockAddr);
+//      Serial.println(F(" ..."));
       status = (MFRC522::StatusCode) mfrc522.MIFARE_Read(blockAddr, buffer, &size);
 //      if (status != MFRC522::STATUS_OK) 
 //      {
 //          Serial.print(F("MIFARE_Read() failed: "));
 //          Serial.println(mfrc522.GetStatusCodeName(status));
 //      }
-      Serial.print(F("Data in block ")); Serial.print(blockAddr); Serial.println(F(":"));
-      dump_byte_array(buffer, 16); Serial.println();
-      Serial.println();
+//      Serial.print(F("Data in block ")); Serial.print(blockAddr); Serial.println(F(":"));
+//      dump_byte_array(buffer, 16); Serial.println();
+//      Serial.println();
       sector++;
       blockAddr += 4;
       a = 0;
