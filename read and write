@@ -37,6 +37,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 
 MFRC522::MIFARE_Key keyA;
 MFRC522::MIFARE_Key keyB;
+MFRC522::MIFARE_Key keyC;
 
 /**
  * Initialize.
@@ -57,12 +58,19 @@ void setup()
     keyA.keyByte[4] = 0xFF;
     keyA.keyByte[5] = 0xFF;
     
-    keyB.keyByte[0] = 0xFF;
-    keyB.keyByte[1] = 0xFF;
-    keyB.keyByte[2] = 0xFF;
-    keyB.keyByte[3] = 0xFF;
-    keyB.keyByte[4] = 0xFF;
-    keyB.keyByte[5] = 0xFF;
+    keyB.keyByte[0] = 0x01;
+    keyB.keyByte[1] = 0x01;
+    keyB.keyByte[2] = 0x01;
+    keyB.keyByte[3] = 0x01;
+    keyB.keyByte[4] = 0x01;
+    keyB.keyByte[5] = 0x01;
+
+    keyC.keyByte[0] = 0x04;
+    keyC.keyByte[1] = 0x0B;
+    keyC.keyByte[2] = 0xD1;
+    keyC.keyByte[3] = 0x16;
+    keyC.keyByte[4] = 0x00;
+    keyC.keyByte[5] = 0x00;
 }
 
 /**
@@ -98,35 +106,41 @@ void loop() {
     //byte sector         = 15;
     //byte blockAddr      = 60;
     //byte dataBlock[]    = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    byte trailerBlock   = 61;
+    byte trailerBlock   = 0;
     
     MFRC522::StatusCode status;
     byte buffer[18];
     byte size = sizeof(buffer);
 
     // Authenticate using key A
-    Serial.println(F("Authenticating using key B..."));
-    status = (MFRC522::StatusCode) mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_B, trailerBlock, &keyB, &(mfrc522.uid));
-    if (status != MFRC522::STATUS_OK) {
-        Serial.print(F("PCD_Authenticate() failed: "));
-        Serial.println(mfrc522.GetStatusCodeName(status));
-        return;
-    }
+//    Serial.println(F("Authenticating using key A..."));
+//status = (MFRC522::StatusCode) mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_B, 63, &keyA, &(mfrc522.uid));
+//    if (status != MFRC522::STATUS_OK)
+//    {
+//        Serial.print(F("PCD_Authenticate() failed: "));
+//        Serial.println(mfrc522.GetStatusCodeName(status));
+//        return;
+//    }
 
-    int sector = 0;
-    int blockAddr = 0;
-    int a = 0;
+    int sector = 3;
+    int blockAddr = 15;
     while (sector < 16)
     {
-    // Show the whole sector as it currently is
+      // Show the whole sector as it currently is
       Serial.println(F("Current data in sector:"));
-      mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyB, sector);
-      Serial.println();
+      if (sector == 0)
+        mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyB, sector);
+      else if (sector == 4)
+        mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyC, sector);
+      else
+        mfrc522.PICC_DumpMifareClassicSectorToSerial(&(mfrc522.uid), &keyA, sector);
+      //Serial.println();
 
       // Read data from the block
 //      Serial.print(F("Reading data from block ")); Serial.print(blockAddr);
 //      Serial.println(F(" ..."));
       status = (MFRC522::StatusCode) mfrc522.MIFARE_Read(blockAddr, buffer, &size);
+      status = (MFRC522::StatusCode) mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_B, 63, &keyA, &(mfrc522.uid));
 //      if (status != MFRC522::STATUS_OK) 
 //      {
 //          Serial.print(F("MIFARE_Read() failed: "));
@@ -137,7 +151,8 @@ void loop() {
 //      Serial.println();
       sector++;
       blockAddr += 4;
-      a = 0;
+      //trailerBlock += 4;
+      delay(10000);
     }
 
 //    // Authenticate using key B
